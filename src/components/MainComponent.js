@@ -3,12 +3,14 @@ import { DISHES } from "../shared/dishes";
 import { Component } from "react";
 import Header from "./HeaderComponent";
 import Footer from "./FooterComponent";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useParams } from "react-router-dom";
 import Home from "./HomeComponent";
 import Contact from "./ContactComponent";
 import { COMMENTS } from "../shared/comments";
 import { LEADERS } from "../shared/leaders";
 import { PROMOTIONS } from "../shared/promotions";
+import Dishdetail from "./DishdetailComponent";
+import About from "./AboutComponent";
 
 class Main extends Component {
   constructor(props) {
@@ -39,6 +41,22 @@ class Main extends Component {
       return <Menu dishes={this.state?.dishes} />;
     };
 
+    const DishDetailPage = () => {
+      const { id } = useParams();
+      return (
+        <Dishdetail
+          selectedDish={
+            this.state?.dishes?.filter((dish) => {
+              return dish?.id === parseInt(id);
+            })[0]
+          }
+          comments={this.state?.comments?.filter((comment) => {
+            return comment?.dishId === parseInt(id);
+          })}
+        />
+      );
+    };
+
     return (
       <div>
         <Header></Header>
@@ -46,6 +64,11 @@ class Main extends Component {
           <Route path="/home" element={<HomePage />} />
           <Route path="/menu" element={<MenuPage />} exact />
           <Route path="/contactus" element={<Contact />} />
+          <Route
+            path="/aboutus"
+            element={<About leaders={this.state?.leaders} />}
+          />
+          <Route path="/dishdetail/:id" element={<DishDetailPage />} />
           <Route path="*" element={<Navigate to="/home" />} />
         </Routes>
         <Footer></Footer>

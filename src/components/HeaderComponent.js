@@ -6,6 +6,15 @@ import {
   Nav,
   Collapse,
   NavbarToggler,
+  Form,
+  Button,
+  FormGroup,
+  Label,
+  Input,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  FormFeedback,
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
 
@@ -15,9 +24,21 @@ class Header extends Component {
 
     this.state = {
       isNavOpen: false,
+      isModalOpen: false,
+      errors: {
+        username: "",
+        password: "",
+      },
+      control: {
+        username: "Username",
+        password: "Password",
+      },
     };
 
     this.toggleNav = this.toggleNav.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
   }
 
   toggleNav() {
@@ -25,6 +46,51 @@ class Header extends Component {
       isNavOpen: !this.state.isNavOpen,
     });
   }
+
+  toggleModal() {
+    this.setState({
+      isModalOpen: !this.state.isModalOpen,
+    });
+  }
+
+  handleLogin(event) {
+    event.preventDefault();
+    if (this.username.value !== "" && this.password.value !== "") {
+      this.toggleModal();
+      alert(
+        "Username: " +
+          this.username.value +
+          " Password: " +
+          this.password.value +
+          " Remember: " +
+          this.remember.checked
+      );
+    }
+  }
+
+  handleBlur = (field) => (event) => {
+    if (field === "username") {
+      this.setState({
+        errors: {
+          ...this.state.errors,
+          [field]:
+            this.username.value.localeCompare("") === 0
+              ? `${this.state.control[field]} is required`
+              : "",
+        },
+      });
+    } else if (field === "password") {
+      this.setState({
+        errors: {
+          ...this.state.errors,
+          [field]:
+            this.password.value.localeCompare("") === 0
+              ? `${this.state.control[field]} is required`
+              : "",
+        },
+      });
+    }
+  };
 
   render() {
     return (
@@ -62,6 +128,11 @@ class Header extends Component {
                     <span className="fa fa-address-card fa-lg">Contact Us</span>
                   </NavLink>
                 </NavItem>
+                <NavItem className="ms-md-auto my-3 mt-md-0">
+                  <Button onClick={this.toggleModal} className="btn-warning">
+                    Login<span className="fa fa-sign-in fa-lg ms-2"></span>
+                  </Button>
+                </NavItem>
               </Nav>
             </Collapse>
           </div>
@@ -76,6 +147,53 @@ class Header extends Component {
             </p>
           </div>
         </div>
+        <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+          <ModalHeader toggle={this.toggleModal}>Login</ModalHeader>
+          <ModalBody>
+            <Form onSubmit={this.handleLogin}>
+              <FormGroup>
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  type="text"
+                  id="username"
+                  name="username"
+                  innerRef={(input) => (this.username = input)}
+                  onBlur={this.handleBlur("username")}
+                />
+                <FormFeedback>{this.state.errors.username}</FormFeedback>
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  type="password"
+                  id="password"
+                  name="password"
+                  innerRef={(input) => (this.password = input)}
+                  onBlur={this.handleBlur("password")}
+                />
+                <FormFeedback>{this.state.errors.password}</FormFeedback>
+              </FormGroup>
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    type="checkbox"
+                    name="remember"
+                    innerRef={(input) => (this.remember = input)}
+                  />
+                  Remember me
+                </Label>
+              </FormGroup>
+              <Button
+                type="submit"
+                value="submit"
+                color="primary"
+                className="mt-3"
+              >
+                Login
+              </Button>
+            </Form>
+          </ModalBody>
+        </Modal>
       </>
     );
   }

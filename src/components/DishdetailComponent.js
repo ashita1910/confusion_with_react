@@ -9,6 +9,7 @@ import {
   CardText,
   CardTitle,
 } from "reactstrap";
+import CommentForm from "./CommentForm";
 
 function RenderDish({ dish }) {
   if (dish) {
@@ -48,6 +49,7 @@ function RenderComments({ comment }) {
             );
           })}
         </ul>
+        <CommentForm />
       </div>
     );
   } else {

@@ -312,11 +312,12 @@ class Contact extends Component {
                 </Col>
                 <Col className="col-md-2">
                   <Control.select
-                    model="contactType"
+                    model=".contactType"
                     name="contactType"
                     id="contactType"
                     className="form-control"
                   >
+                    <option>Select</option>
                     <option>Tel.</option>
                     <option>Email</option>
                   </Control.select>

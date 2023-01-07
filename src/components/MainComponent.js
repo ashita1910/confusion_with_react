@@ -15,6 +15,7 @@ import Contact from "./ContactComponent";
 import Dishdetail from "./DishdetailComponent";
 import About from "./AboutComponent";
 import { connect } from "react-redux";
+import { addComment } from "../redux/Actions/ActionCreators";
 
 function withRouter(Component) {
   function ComponentWithRouterProp(props) {
@@ -35,6 +36,11 @@ const matchStateToProps = (state) => {
     promotions: state?.promotions,
   };
 };
+
+const matchDispatchToProps = (dispatch) => ({
+  addComment: (dishId, rating, author, comment) =>
+    dispatch(addComment(dishId, rating, author, comment)),
+});
 
 class Main extends Component {
   render() {
@@ -66,6 +72,7 @@ class Main extends Component {
           comments={this.props?.comments?.filter((comment) => {
             return comment?.dishId === parseInt(id);
           })}
+          addComment={this.props.addComment}
         />
       );
     };
@@ -90,4 +97,6 @@ class Main extends Component {
   }
 }
 
-export default withRouter(connect(matchStateToProps)(Main));
+export default withRouter(
+  connect(matchStateToProps, matchDispatchToProps)(Main)
+);

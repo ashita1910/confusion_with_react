@@ -41,19 +41,21 @@ class CommentForm extends Component {
   }
 
   handleSubmit(values) {
-    alert(JSON.stringify(values));
     this.toggleModal();
+    this.props.addComment(
+      this.props.dishId,
+      values?.rating,
+      values?.name,
+      values?.comment
+    );
   }
 
   render() {
     return (
       <>
-        <button
-          className="btn btn-light btn-outline-secondary my-3"
-          onClick={this.toggleModal}
-        >
+        <Button outline className="my-3" onClick={this.toggleModal}>
           <i className="fa fa-pencil"></i> Submit Comment
-        </button>
+        </Button>
         <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
           <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
           <ModalBody>
@@ -67,6 +69,7 @@ class CommentForm extends Component {
                     name="rating"
                     placeholder="Select"
                     className="form-control"
+                    validators={{ required }}
                   >
                     <option>Select</option>
                     <option>1</option>
@@ -76,6 +79,14 @@ class CommentForm extends Component {
                     <option>5</option>
                   </Control.select>
                 </Col>
+                <Errors
+                  model=".rating"
+                  className="text-danger"
+                  show="touched"
+                  messages={{
+                    required: "Rating is required",
+                  }}
+                />
               </Row>
               <Row className="form-group my-3">
                 <Label htmlFor="name">Your name</Label>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Control, Errors, LocalForm } from "react-redux-form";
+import { Control, Errors, Form } from "react-redux-form";
 import { Link } from "react-router-dom";
 import {
   Breadcrumb,
@@ -69,6 +69,7 @@ class Contact extends Component {
 
   submitHandler(values) {
     alert(JSON.stringify(values));
+    this.props.resetFeedbackForm();
   }
 
   // handleBlur = (field) => (evt) => {
@@ -192,7 +193,10 @@ class Contact extends Component {
             <h3>Send Us Your Feedback</h3>
           </div>
           <div className="col-md-12">
-            <LocalForm onSubmit={(values) => this.submitHandler(values)}>
+            <Form
+              model="feedback"
+              onSubmit={(values) => this.submitHandler(values)}
+            >
               <Row className="form-group mb-4">
                 <Label md={2} for="firstname">
                   First Name
@@ -346,7 +350,7 @@ class Contact extends Component {
                 </Col>
               </Row>
               <Button>Submit</Button>
-            </LocalForm>
+            </Form>
           </div>
         </div>
       </div>

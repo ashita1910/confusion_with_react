@@ -16,6 +16,7 @@ import Dishdetail from "./DishdetailComponent";
 import About from "./AboutComponent";
 import { connect } from "react-redux";
 import { addComment, fetchDishes } from "../redux/Actions/ActionCreators";
+import { actions } from "react-redux-form";
 
 function withRouter(Component) {
   function ComponentWithRouterProp(props) {
@@ -41,6 +42,7 @@ const matchDispatchToProps = (dispatch) => ({
   addComment: (dishId, rating, author, comment) =>
     dispatch(addComment(dishId, rating, author, comment)),
   fetchDishes: () => dispatch(fetchDishes()),
+  resetFeedbackForm: () => dispatch(actions.reset("feedback")),
 });
 
 class Main extends Component {
@@ -92,7 +94,12 @@ class Main extends Component {
         <Routes>
           <Route path="/home" element={<HomePage />} />
           <Route path="/menu" element={<MenuPage />} exact />
-          <Route path="/contactus" element={<Contact />} />
+          <Route
+            path="/contactus"
+            element={
+              <Contact resetFeedbackForm={this.props.resetFeedbackForm} />
+            }
+          />
           <Route
             path="/aboutus"
             element={<About leaders={this.props?.leaders} />}

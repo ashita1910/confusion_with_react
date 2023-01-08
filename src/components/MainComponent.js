@@ -15,7 +15,7 @@ import Contact from "./ContactComponent";
 import Dishdetail from "./DishdetailComponent";
 import About from "./AboutComponent";
 import { connect } from "react-redux";
-import { addComment } from "../redux/Actions/ActionCreators";
+import { addComment, fetchDishes } from "../redux/Actions/ActionCreators";
 
 function withRouter(Component) {
   function ComponentWithRouterProp(props) {
@@ -40,14 +40,21 @@ const matchStateToProps = (state) => {
 const matchDispatchToProps = (dispatch) => ({
   addComment: (dishId, rating, author, comment) =>
     dispatch(addComment(dishId, rating, author, comment)),
+  fetchDishes: () => dispatch(fetchDishes()),
 });
 
 class Main extends Component {
+  componentDidMount() {
+    this.props.fetchDishes();
+  }
+
   render() {
     const HomePage = () => {
       return (
         <Home
-          dish={this.props.dishes.filter((dish) => dish.featured)[0]}
+          dish={this.props.dishes.dishes.filter((dish) => dish.featured)[0]}
+          dishesLoading={this.props.dishes.isLoading}
+          errMess={this.props.dishes.errMess}
           leader={this.props.leaders.filter((leader) => leader.featured)[0]}
           promotion={
             this.props.promotions.filter((promotion) => promotion.featured)[0]
@@ -65,7 +72,7 @@ class Main extends Component {
       return (
         <Dishdetail
           selectedDish={
-            this.props?.dishes?.filter((dish) => {
+            this.props?.dishes?.dishes?.filter((dish) => {
               return dish?.id === parseInt(id);
             })[0]
           }
@@ -73,6 +80,8 @@ class Main extends Component {
             return comment?.dishId === parseInt(id);
           })}
           addComment={this.props.addComment}
+          dishesLoading={this.props.dishes.isLoading}
+          errMess={this.props.dishes.errMess}
         />
       );
     };

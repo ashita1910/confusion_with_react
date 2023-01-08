@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "reactstrap";
 import CommentForm from "./CommentForm";
+import { Loader } from "./LoaderComponent";
 
 function RenderDish({ dish }) {
   if (dish) {
@@ -58,7 +59,17 @@ function RenderComments({ comment, addComment, dishId }) {
 }
 
 const Dishdetail = (props) => {
-  if (props?.selectedDish) {
+  if (props?.dishesLoading) {
+    return <Loader />;
+  } else if (props?.errMess) {
+    return (
+      <>
+        <div className="row">
+          <div className="col-md-12">{props?.errMess}</div>
+        </div>
+      </>
+    );
+  } else if (props?.selectedDish) {
     return (
       <div className="container">
         <div className="row">

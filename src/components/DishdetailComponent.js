@@ -9,6 +9,7 @@ import {
   CardText,
   CardTitle,
 } from "reactstrap";
+import { baseUrl } from "../shared/baseUrl";
 import CommentForm from "./CommentForm";
 import { Loader } from "./LoaderComponent";
 
@@ -16,7 +17,7 @@ function RenderDish({ dish }) {
   if (dish) {
     return (
       <Card>
-        <CardImg width="100%" src={dish?.image} alt={dish?.name} />
+        <CardImg width="100%" src={baseUrl + dish?.image} alt={dish?.name} />
         <CardBody>
           <CardTitle>{dish?.name}</CardTitle>
           <CardText>{dish?.description}</CardText>
@@ -28,8 +29,24 @@ function RenderDish({ dish }) {
   }
 }
 
-function RenderComments({ comment, addComment, dishId }) {
-  if (comment) {
+function RenderComments({
+  comment,
+  addComment,
+  commentErrMess,
+  dishId,
+  postComment,
+}) {
+  if (commentErrMess) {
+    return (
+      <>
+        <div className="row">
+          <div className="col-md-12 text-danger text-center my-3">
+            {commentErrMess}
+          </div>
+        </div>
+      </>
+    );
+  } else if (comment) {
     return (
       <div>
         <h4>Comments</h4>
@@ -50,7 +67,11 @@ function RenderComments({ comment, addComment, dishId }) {
             );
           })}
         </ul>
-        <CommentForm addComment={addComment} dishId={dishId} />
+        <CommentForm
+          addComment={addComment}
+          dishId={dishId}
+          postComment={postComment}
+        />
       </div>
     );
   } else {
@@ -65,7 +86,9 @@ const Dishdetail = (props) => {
     return (
       <>
         <div className="row">
-          <div className="col-md-12">{props?.errMess}</div>
+          <div className="col-md-12 text-danger text-center my-3">
+            {props?.errMess}
+          </div>
         </div>
       </>
     );
@@ -92,7 +115,9 @@ const Dishdetail = (props) => {
             <RenderComments
               comment={props?.comments}
               addComment={props?.addComment}
+              commentErrMess={props?.commentErrMess}
               dishId={props?.selectedDish?.id}
+              postComment={props?.postComment}
             />
           </div>
         </div>

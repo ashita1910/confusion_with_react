@@ -1,15 +1,6 @@
-import { DISHES } from "../../shared/dishes";
+import fetch from "cross-fetch";
 import * as actionTypes from "./ActionTypes";
-
-export const addComment = (dishId, rating, author, comment) => ({
-  type: actionTypes.ADD_COMMENT,
-  payload: {
-    dishId: dishId,
-    rating: rating,
-    author: author,
-    comment: comment,
-  },
-});
+import { baseUrl } from "../../shared/baseUrl";
 
 export const addDishes = (dishes) => ({
   type: actionTypes.ADD_DISHES,
@@ -25,10 +16,124 @@ export const dishesFailed = (errMess) => ({
   payload: errMess,
 });
 
-export const fetchDishes = () => (dispatch) => {
-  dispatch(dishesLoading(true));
+export const fetchDishes = () => async (dispatch) => {
+  dispatch(dishesLoading());
 
-  setTimeout(() => {
-    dispatch(addDishes(DISHES));
-  }, 2000);
+  return await fetch(baseUrl + "dishes")
+    .then((res) => {
+      if (res?.ok) {
+        return res;
+      } else {
+        var error = new Error(
+          "Error: " + res?.status + " : " + res?.statusText
+        );
+        error.response = res;
+        throw error;
+      }
+    })
+    .then((res) => res.json())
+    .then((data) => dispatch(addDishes(data)))
+    .catch((err) => dispatch(dishesFailed(err?.message)));
+};
+
+export const commentsFailed = (errMess) => ({
+  type: actionTypes.COMMENTS_FAILED,
+  payload: errMess,
+});
+
+export const addComments = (comments) => ({
+  type: actionTypes.ADD_COMMENTS,
+  payload: comments,
+});
+
+export const fetchComments = () => async (dispatch) => {
+  return await fetch(baseUrl + "comments")
+    .then((res) => {
+      if (res?.ok) {
+        return res;
+      } else {
+        var error = new Error(
+          "Error: " + res?.status + " : " + res?.statusText
+        );
+        error.response = res;
+        throw error;
+      }
+    })
+    .then((res) => res.json())
+    .then((data) => dispatch(addComments(data)))
+    .catch((err) => dispatch(commentsFailed(err?.message)));
+};
+
+export const addComment = (comment) => ({
+  type: actionTypes.ADD_COMMENT,
+  payload: comment,
+});
+
+export const postComment =
+  (dishId, rating, author, comment) => async (dispatch) => {
+    return await fetch(baseUrl + "comments", {
+      method: "POST",
+      body: JSON.stringify({
+        dishId: dishId,
+        rating: rating,
+        comment: comment,
+        author: author,
+        date: new Date().toISOString(),
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "same-origin",
+    })
+      .then((res) => {
+        if (res?.ok) {
+          return res;
+        } else {
+          var error = new Error(
+            "Error: " + res?.status + " : " + res?.statusText
+          );
+          error.response = res;
+          throw error;
+        }
+      })
+      .then((res) => res.json())
+      .then((data) => dispatch(addComment(data)))
+      .catch((err) => {
+        console.log("post comments", err.message);
+        alert("Your comment could not be posted!\nError: " + err.message);
+      });
+  };
+
+export const addPromotions = (promotions) => ({
+  type: actionTypes.ADD_PROMOTIONS,
+  payload: promotions,
+});
+
+export const promotionsLoading = () => ({
+  type: actionTypes.PROMOTIONS_LOADING,
+});
+
+export const promotionsFailed = (errMess) => ({
+  type: actionTypes.PROMOTIONS_FAILED,
+  payload: errMess,
+});
+
+export const fetchPromotions = () => async (dispatch) => {
+  dispatch(promotionsLoading(true));
+
+  return await fetch(baseUrl + "promotions")
+    .then((res) => {
+      if (res?.ok) {
+        return res;
+      } else {
+        var error = new Error(
+          "Error: " + res?.status + " : " + res?.statusText
+        );
+        error.response = res;
+        throw error;
+      }
+    })
+    .then((res) => res.json())
+    .then((data) => dispatch(addPromotions(data)))
+    .catch((err) => dispatch(promotionsFailed(err?.message)));
 };

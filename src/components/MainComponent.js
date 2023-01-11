@@ -15,7 +15,13 @@ import Contact from "./ContactComponent";
 import Dishdetail from "./DishdetailComponent";
 import About from "./AboutComponent";
 import { connect } from "react-redux";
-import { addComment, fetchDishes } from "../redux/Actions/ActionCreators";
+import {
+  addComment,
+  fetchComments,
+  fetchDishes,
+  fetchPromotions,
+  postComment,
+} from "../redux/Actions/ActionCreators";
 import { actions } from "react-redux-form";
 
 function withRouter(Component) {
@@ -39,15 +45,19 @@ const matchStateToProps = (state) => {
 };
 
 const matchDispatchToProps = (dispatch) => ({
-  addComment: (dishId, rating, author, comment) =>
-    dispatch(addComment(dishId, rating, author, comment)),
   fetchDishes: () => dispatch(fetchDishes()),
+  fetchComments: () => dispatch(fetchComments()),
+  fetchPromotions: () => dispatch(fetchPromotions()),
+  postComment: (dishId, rating, author, comment) =>
+    dispatch(postComment(dishId, rating, author, comment)),
   resetFeedbackForm: () => dispatch(actions.reset("feedback")),
 });
 
 class Main extends Component {
   componentDidMount() {
     this.props.fetchDishes();
+    this.props.fetchComments();
+    this.props.fetchPromotions();
   }
 
   render() {
@@ -59,8 +69,12 @@ class Main extends Component {
           errMess={this.props.dishes.errMess}
           leader={this.props.leaders.filter((leader) => leader.featured)[0]}
           promotion={
-            this.props.promotions.filter((promotion) => promotion.featured)[0]
+            this.props.promotions.promotions.filter(
+              (promotion) => promotion.featured
+            )[0]
           }
+          promotionsLoading={this.props.promotions.isLoading}
+          promotionErrMess={this.props.promotions.errMess}
         />
       );
     };
@@ -78,12 +92,14 @@ class Main extends Component {
               return dish?.id === parseInt(id);
             })[0]
           }
-          comments={this.props?.comments?.filter((comment) => {
+          comments={this.props?.comments?.comments?.filter((comment) => {
             return comment?.dishId === parseInt(id);
           })}
           addComment={this.props.addComment}
+          commentErrMess={this.props.comments.errMess}
           dishesLoading={this.props.dishes.isLoading}
           errMess={this.props.dishes.errMess}
+          postComment={this.props.postComment}
         />
       );
     };

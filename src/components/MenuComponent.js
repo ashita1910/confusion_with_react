@@ -8,13 +8,14 @@ import {
   CardImgOverlay,
   CardTitle,
 } from "reactstrap";
+import { baseUrl } from "../shared/baseUrl";
 import { Loader } from "./LoaderComponent";
 
 function RenderMenuItem({ dish }) {
   return (
     <Card>
       <Link to={`/dishdetail/${dish?.id}`}>
-        <CardImg width="100%" src={dish?.image} alt={dish?.name} />
+        <CardImg width="100%" src={baseUrl + dish?.image} alt={dish?.name} />
         <CardImgOverlay>
           <CardTitle>{dish?.name}</CardTitle>
         </CardImgOverlay>
@@ -30,7 +31,9 @@ const Menu = (props) => {
     return (
       <>
         <div className="row">
-          <div className="col-md-12">{props?.dishes?.errMess}</div>
+          <div className="col-md-12 text-danger text-center my-3">
+            {props?.dishes?.errMess}
+          </div>
         </div>
       </>
     );

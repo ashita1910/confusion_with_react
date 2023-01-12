@@ -19,6 +19,7 @@ import {
   addComment,
   fetchComments,
   fetchDishes,
+  fetchLeaders,
   fetchPromotions,
   postComment,
 } from "../redux/Actions/ActionCreators";
@@ -48,6 +49,7 @@ const matchDispatchToProps = (dispatch) => ({
   fetchDishes: () => dispatch(fetchDishes()),
   fetchComments: () => dispatch(fetchComments()),
   fetchPromotions: () => dispatch(fetchPromotions()),
+  fetchLeaders: () => dispatch(fetchLeaders()),
   postComment: (dishId, rating, author, comment) =>
     dispatch(postComment(dishId, rating, author, comment)),
   resetFeedbackForm: () => dispatch(actions.reset("feedback")),
@@ -58,6 +60,7 @@ class Main extends Component {
     this.props.fetchDishes();
     this.props.fetchComments();
     this.props.fetchPromotions();
+    this.props.fetchLeaders();
   }
 
   render() {
@@ -67,7 +70,11 @@ class Main extends Component {
           dish={this.props.dishes.dishes.filter((dish) => dish.featured)[0]}
           dishesLoading={this.props.dishes.isLoading}
           errMess={this.props.dishes.errMess}
-          leader={this.props.leaders.filter((leader) => leader.featured)[0]}
+          leader={
+            this.props.leaders.leaders.filter((leader) => leader.featured)[0]
+          }
+          leaderLoading={this.props.leaders.isLoading}
+          leaderErrMess={this.props.leaders.errMess}
           promotion={
             this.props.promotions.promotions.filter(
               (promotion) => promotion.featured

@@ -137,3 +137,37 @@ export const fetchPromotions = () => async (dispatch) => {
     .then((data) => dispatch(addPromotions(data)))
     .catch((err) => dispatch(promotionsFailed(err?.message)));
 };
+
+export const addLeaders = (promotions) => ({
+  type: actionTypes.ADD_LEADERS,
+  payload: promotions,
+});
+
+export const leadersLoading = () => ({
+  type: actionTypes.LEADERS_LOADING,
+});
+
+export const leadersFailed = (errMess) => ({
+  type: actionTypes.LEADERS_FAILED,
+  payload: errMess,
+});
+
+export const fetchLeaders = () => async (dispatch) => {
+  dispatch(leadersLoading(true));
+
+  return await fetch(baseUrl + "leaders")
+    .then((res) => {
+      if (res?.ok) {
+        return res;
+      } else {
+        var error = new Error(
+          "Error: " + res?.status + " : " + res?.statusText
+        );
+        error.response = res;
+        throw error;
+      }
+    })
+    .then((res) => res.json())
+    .then((data) => dispatch(addLeaders(data)))
+    .catch((err) => dispatch(leadersFailed(err?.message)));
+};

@@ -12,17 +12,25 @@ import {
 import { baseUrl } from "../shared/baseUrl";
 import CommentForm from "./CommentForm";
 import { Loader } from "./LoaderComponent";
+import { FadeTransform, Stagger, Fade } from "react-animation-components";
 
 function RenderDish({ dish }) {
   if (dish) {
     return (
-      <Card>
-        <CardImg width="100%" src={baseUrl + dish?.image} alt={dish?.name} />
-        <CardBody>
-          <CardTitle>{dish?.name}</CardTitle>
-          <CardText>{dish?.description}</CardText>
-        </CardBody>
-      </Card>
+      <FadeTransform
+        in
+        transformProps={{
+          exitTransform: "scale(0.5) translateY(-50%)",
+        }}
+      >
+        <Card>
+          <CardImg width="100%" src={baseUrl + dish?.image} alt={dish?.name} />
+          <CardBody>
+            <CardTitle>{dish?.name}</CardTitle>
+            <CardText>{dish?.description}</CardText>
+          </CardBody>
+        </Card>
+      </FadeTransform>
     );
   } else {
     return <div></div>;
@@ -51,21 +59,25 @@ function RenderComments({
       <div>
         <h4>Comments</h4>
         <ul className="list-group list-group-flush">
-          {comment?.map((commentObj) => {
-            return (
-              <li className="list-group-item" key={commentObj?.id + 1}>
-                <p>{commentObj?.comment}</p>
-                <p className="mb-0">
-                  -- {commentObj?.author},{" "}
-                  {new Intl.DateTimeFormat("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "2-digit",
-                  }).format(new Date(Date.parse(commentObj?.date)))}
-                </p>
-              </li>
-            );
-          })}
+          <Stagger in>
+            {comment?.map((commentObj) => {
+              return (
+                <Fade in>
+                  <li className="list-group-item" key={commentObj?.id + 1}>
+                    <p>{commentObj?.comment}</p>
+                    <p className="mb-0">
+                      -- {commentObj?.author},{" "}
+                      {new Intl.DateTimeFormat("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "2-digit",
+                      }).format(new Date(Date.parse(commentObj?.date)))}
+                    </p>
+                  </li>
+                </Fade>
+              );
+            })}
+          </Stagger>
         </ul>
         <CommentForm
           addComment={addComment}

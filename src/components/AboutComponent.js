@@ -14,22 +14,22 @@ import { Stagger, Fade } from "react-animation-components";
 
 function RenderLeader({ leader }) {
   if (leader) {
-    <Fade in>
-      return (
-      <Media list className="d-flex flex-column flex-md-row">
-        <Media left className="me-5">
-          <Media object src={baseUrl + leader?.image} alt={leader?.name} />
-        </Media>
-        <Media body>
-          <Media heading className="mt-3 mt-md-0">
-            {leader?.name}
+    return (
+      <Fade in>
+        <Media list className="d-flex flex-column flex-md-row">
+          <Media left className="me-5">
+            <Media object src={baseUrl + leader?.image} alt={leader?.name} />
           </Media>
-          <Media>{leader?.designation}</Media>
-          {leader?.description}
+          <Media body>
+            <Media heading className="mt-3 mt-md-0">
+              {leader?.name}
+            </Media>
+            <Media>{leader?.designation}</Media>
+            {leader?.description}
+          </Media>
         </Media>
-      </Media>
-      );
-    </Fade>;
+      </Fade>
+    );
   }
 }
 

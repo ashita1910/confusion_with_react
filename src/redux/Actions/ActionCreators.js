@@ -104,6 +104,38 @@ export const postComment =
       });
   };
 
+export const postFeedback = (feedback) => async (dispatch) => {
+  return await fetch(baseUrl + "feedback", {
+    method: "POST",
+    body: JSON.stringify(feedback),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "same-origin",
+  })
+    .then((res) => {
+      if (res?.ok) {
+        return res;
+      } else {
+        var error = new Error(
+          "Error: " + res?.status + " : " + res?.statusText
+        );
+        error.response = res;
+        throw error;
+      }
+    })
+    .then((res) => res.json())
+    .then((data) =>
+      alert(
+        "Your feedback submitted successfully!\nFeedback received: " +
+          JSON.stringify(data)
+      )
+    )
+    .catch((err) =>
+      alert("Your feedback could not be submitted!\nError: " + err?.message)
+    );
+};
+
 export const addPromotions = (promotions) => ({
   type: actionTypes.ADD_PROMOTIONS,
   payload: promotions,

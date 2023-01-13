@@ -67,8 +67,8 @@ class Contact extends Component {
   //   });
   // }
 
-  submitHandler(values) {
-    alert(JSON.stringify(values));
+  async submitHandler(values) {
+    await this.props.postFeedback(values);
     this.props.resetFeedbackForm();
   }
 
